@@ -25,20 +25,31 @@ class DCFEngine:
             current_fcf *= (1 + g)
             fcf.append(current_fcf)
         
-        # Terminal value
+        # Terminal value - handle negative FCF case
         term_g = p['terminal_growth']
         if isinstance(term_g, (tuple, list)):
             term_g = np.mean(term_g)
         term_g = min(term_g, wacc - 0.001)
         
-        tv = fcf[-1] * (1 + term_g) / (wacc - term_g) if wacc > term_g + 0.001 else fcf[-1] * 15
+        # If last FCF is negative, use absolute value for terminal value calculation
+        # or set terminal value to 0 if company is expected to remain unprofitable
+        if fcf[-1] < 0:
+            # Option 1: Assume company will turn profitable (use abs value)
+            tv = abs(fcf[-1]) * (1 + term_g) / (wacc - term_g) if wacc > term_g + 0.001 else abs(fcf[-1]) * 15
+            # Option 2: If you prefer conservative approach, set to 0
+            # tv = 0
+        else:
+            tv = fcf[-1] * (1 + term_g) / (wacc - term_g) if wacc > term_g + 0.001 else fcf[-1] * 15
         
         # Present value
         pv_fcf = sum(f / (1 + wacc)**(i+1) for i, f in enumerate(fcf))
         pv_tv = tv / (1 + wacc)**len(fcf)
         
+        # Enterprise value can be negative for distressed companies
+        enterprise_value = pv_fcf + pv_tv
+        
         return {
-            'enterprise_value': max(0, pv_fcf + pv_tv),
+            'enterprise_value': enterprise_value,  # Allow negative EV
             'wacc': wacc,
             'terminal_value': tv,
             'fcf_projections': fcf
