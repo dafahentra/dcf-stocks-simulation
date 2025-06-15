@@ -1,6 +1,4 @@
-"""
-Ultra-Optimized DCF Valuation Tool
-"""
+"""Optimized DCF Valuation Tool"""
 
 import streamlit as st
 import pandas as pd
@@ -24,23 +22,7 @@ def growth_stats(vals: list) -> dict:
     if len(vals) < 2: return {'mean': 0.05, 'std': 0.03}
     gr = np.diff(vals) / vals[:-1]
     gr = np.clip(gr, -0.5, 1.0)
-    # IQR outlier removal
-    q1, q3 = np.percentile(gr, [25, 75])
-    mask = (gr >= q1 - 1.5*(q3-q1)) & (gr <= q3 + 1.5*(q3-q1))
-    clean = gr[mask] if mask.any() else gr
-    return {'mean': float(clean.mean()), 'std': float(clean.std()) if len(clean) > 1 else 0.03}
-
-def input_field(label: str, val: float, key: str, min_val=None, max_val=None, step=None, **kw) -> float:
-    """Simplified input helper with common params"""
-    args = {"value": val, "key": key, "format": "%.3f"}
-    if min_val is not None: args["min_value"] = min_val
-    if max_val is not None: args["max_value"] = max_val
-    if step is not None: args["step"] = step
-    return st.number_input(label, **{**args, **kw})
-
-def section(title: str) -> str:
-    """Section header HTML"""
-    return f'<div class="input-section"><div class="input-section-title">{title}</div>'
+    return {'mean': float(gr.mean()), 'std': float(gr.std()) if len(gr) > 1 else 0.03}
 
 def main():
     # Header
@@ -52,24 +34,23 @@ def main():
         st.header("Configuration")
         
         st.subheader("Market Parameters")
-        rf = input_field("Risk-Free Rate", 0.045, "rf", 0.0, 0.10, 0.005)
-        mp = input_field("Market Risk Premium", st.session_state.get('mp_calc', 0.065), "mp", 0.03, 0.12, 0.005)
+        rf = st.number_input("Risk-Free Rate", 0.0, 0.10, 0.045, 0.005, format="%.3f")
+        mp = st.number_input("Market Risk Premium", 0.03, 0.12, st.session_state.get('mp_calc', 0.065), 0.005, format="%.3f")
         
         st.subheader("Simulation Settings")
         n_sims = st.select_slider("Monte Carlo Simulations", [1000, 5000, 10000, 25000, 50000], 10000)
         n_years = st.slider("Projection Years", 3, 10, 5)
-        terminal_method = st.radio("Terminal Value Method", ["Perpetual Growth", "Exit Multiple"])
     
     # Main content
     col1, col2 = st.columns([1, 2])
     
     with col1:
         # Company Info
-        st.markdown(section('Company Information'), unsafe_allow_html=True)
+        st.markdown('<div class="input-section"><div style="font-size:1.3rem;font-weight:500;color:#c584f7">Company Information</div>', unsafe_allow_html=True)
         
         company = st.text_input("Company Name", "Example Corp")
         ticker = st.text_input("Ticker Symbol", "EXPL")
-        currency = st.selectbox("Currency", ["USD", "EUR", "GBP", "JPY", "CNY", "INR", "Other"])
+        currency = st.selectbox("Currency", ["USD", "EUR", "GBP", "JPY", "CNY", "INR"])
         
         price = st.number_input("Current Stock Price", 0.01, value=100.0, format="%.2f")
         shares = st.number_input("Shares Outstanding (millions)", 0.1, value=100.0, format="%.1f")
@@ -81,16 +62,15 @@ def main():
                     st.session_state.fetched_beta = beta
                     st.session_state.mp_calc = mkt_info['market_premium']
                     st.success(f"Beta: {beta:.3f}")
-                    # Hapus st.rerun() untuk menghindari infinite loop
                 else:
                     st.error(err or "Unable to fetch beta")
         
-        beta = input_field("Beta Coefficient", st.session_state.get('fetched_beta', 1.0), "beta", 0.1, 3.0, 0.01)
+        beta = st.number_input("Beta Coefficient", 0.1, 3.0, st.session_state.get('fetched_beta', 1.0), 0.01, format="%.3f")
         
         st.markdown('</div>', unsafe_allow_html=True)
         
         # Financial Structure
-        st.markdown(section('Financial Structure'), unsafe_allow_html=True)
+        st.markdown('<div class="input-section"><div style="font-size:1.3rem;font-weight:500;color:#c584f7">Financial Structure</div>', unsafe_allow_html=True)
         
         debt = st.number_input("Total Debt (millions)", 0.0, value=200.0, format="%.1f")
         cash = st.number_input("Cash & Equivalents (millions)", 0.0, value=50.0, format="%.1f")
@@ -98,14 +78,14 @@ def main():
         net_debt = debt - cash
         d2e = debt / (price * shares) if price * shares > 0 else 0
         
-        cod = input_field("Cost of Debt", 0.04, "cod", 0.0, 0.15, 0.005)
-        tax = input_field("Effective Tax Rate", 0.25, "tax", 0.0, 0.50, 0.01)
+        cod = st.number_input("Cost of Debt", 0.0, 0.15, 0.04, 0.005, format="%.3f")
+        tax = st.number_input("Effective Tax Rate", 0.0, 0.50, 0.25, 0.01, format="%.3f")
         
         st.markdown('</div>', unsafe_allow_html=True)
     
     with col2:
         # Historical Financials
-        st.markdown(section('Historical Financials'), unsafe_allow_html=True)
+        st.markdown('<div class="input-section"><div style="font-size:1.3rem;font-weight:500;color:#c584f7">Historical Financials</div>', unsafe_allow_html=True)
         
         years = st.slider("Years of historical data", 3, 5, 5)
         curr_yr = datetime.now().year
@@ -125,7 +105,6 @@ def main():
             yr = curr_yr - i
             fcfs.append(col.number_input(f"{yr}", -1000.0, value=100.0*(1.05**(years-i-1)), format="%.1f", key=f"f{yr}"))
         
-        # Reverse lists to get chronological order for calculations
         revs.reverse()
         fcfs.reverse()
         
@@ -137,28 +116,23 @@ def main():
         st.markdown('</div>', unsafe_allow_html=True)
         
         # Display metrics
-        st.markdown(section('Calculated Metrics'), unsafe_allow_html=True)
+        st.markdown('<div class="input-section"><div style="font-size:1.3rem;font-weight:500;color:#c584f7">Calculated Metrics</div>', unsafe_allow_html=True)
         
         # Quick WACC calc
         ce = rf + beta * mp
         we = 1 / (1 + d2e)
         wacc = we * ce + (1 - we) * cod * (1 - tax)
         
-        metrics = [
-            ("Average Revenue Growth", fmt_pct(rev_g['mean']), f"σ: {fmt_pct(rev_g['std'])}"),
-            ("Average Free Cash Flow Growth", fmt_pct(fcf_g['mean']), f"σ: {fmt_pct(fcf_g['std'])}"),
-            ("Average Free Cash Flow Margin", fmt_pct(fcf_margin), None),
-            ("Weighted Average Cost of Capital", fmt_pct(wacc), None)
-        ]
-        
         cols = st.columns(4)
-        for col, (l, v, d) in zip(cols, metrics):
-            col.markdown(metric_card(l, v, ('neutral', d) if d else None), unsafe_allow_html=True)
+        cols[0].markdown(metric_card("Avg Revenue Growth", fmt_pct(rev_g['mean']), ('neutral', f"σ: {fmt_pct(rev_g['std'])}")), unsafe_allow_html=True)
+        cols[1].markdown(metric_card("Avg FCF Growth", fmt_pct(fcf_g['mean']), ('neutral', f"σ: {fmt_pct(fcf_g['std'])}")), unsafe_allow_html=True)
+        cols[2].markdown(metric_card("Avg FCF Margin", fmt_pct(fcf_margin)), unsafe_allow_html=True)
+        cols[3].markdown(metric_card("WACC", fmt_pct(wacc)), unsafe_allow_html=True)
         
         st.markdown('</div>', unsafe_allow_html=True)
         
         # Growth assumptions
-        st.markdown(section('Growth Assumptions'), unsafe_allow_html=True)
+        st.markdown('<div class="input-section"><div style="font-size:1.3rem;font-weight:500;color:#c584f7">Growth Assumptions</div>', unsafe_allow_html=True)
         
         use_range = st.checkbox("Use growth rate ranges", True)
         
@@ -171,28 +145,25 @@ def main():
                 c1, c2, c3 = st.columns([2, 2, 2])
                 center = max(base_g * (0.9**i), 0.02)
                 with c1: st.markdown(f"**Year {i+1}**")
-                with c2: min_g = input_field("Min", max(center-0.05, -0.1), f"ming{i}", -0.5, 1.0, 0.01)
-                with c3: max_g = input_field("Max", min(center+0.05, 0.3), f"maxg{i}", -0.5, 1.0, 0.01)
+                with c2: min_g = st.number_input("Min", -0.5, 1.0, max(center-0.05, -0.1), 0.01, format="%.3f", key=f"ming{i}")
+                with c3: max_g = st.number_input("Max", -0.5, 1.0, min(center+0.05, 0.3), 0.01, format="%.3f", key=f"maxg{i}")
                 proj_growth.append((min(min_g, max_g), max(min_g, max_g)))
         else:
             st.markdown("**Projected Growth Rates**")
             g_cols = st.columns(n_years)
             for i, col in enumerate(g_cols):
-                g = col.number_input(f"Year {i+1}", max(base_g*(0.9**i), 0.02), format="%.3f", key=f"g{i}")
+                g = col.number_input(f"Year {i+1}", -0.5, 1.0, max(base_g*(0.9**i), 0.02), 0.01, format="%.3f", key=f"g{i}")
                 proj_growth.append(g)
         
         # Terminal value
         st.markdown("**Terminal Value**")
-        if terminal_method == "Perpetual Growth":
-            if use_range:
-                c1, c2 = st.columns(2)
-                with c1: tg_min = input_field("Min Terminal", 0.02, "tgmin", 0.0, 0.04, 0.005)
-                with c2: tg_max = input_field("Max Terminal", 0.03, "tgmax", 0.0, 0.05, 0.005)
-                term_growth = (tg_min, tg_max)
-            else:
-                term_growth = input_field("Terminal Growth", 0.025, "tg", 0.0, 0.05, 0.005)
+        if use_range:
+            c1, c2 = st.columns(2)
+            with c1: tg_min = st.number_input("Min Terminal", 0.0, 0.04, 0.02, 0.005, format="%.3f")
+            with c2: tg_max = st.number_input("Max Terminal", 0.0, 0.05, 0.03, 0.005, format="%.3f")
+            term_growth = (tg_min, tg_max)
         else:
-            term_growth = st.number_input("Exit Multiple (x FCF)", 5.0, 30.0, 15.0, 0.5, format="%.1f")
+            term_growth = st.number_input("Terminal Growth", 0.0, 0.05, 0.025, 0.005, format="%.3f")
         
         st.markdown('</div>', unsafe_allow_html=True)
     

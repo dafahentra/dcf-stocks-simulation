@@ -2,7 +2,6 @@ import numpy as np
 import yfinance as yf
 import streamlit as st
 
-# Gunakan requests standar sebagai fallback
 try:
     from curl_cffi import requests
 except ImportError:
@@ -18,13 +17,13 @@ MARKETS = {
     'CN': {'idx': '000001.SS', 'sfx': '.SS', 'mp': 0.070, 'rf': 0.025},
 }
 
-@st.cache_data(ttl=3600, show_spinner=False)
+@st.cache_data(ttl=3600)
 def fetch_stock_beta(ticker: str, period: str = "2y"):
-    """Fetch beta & market info in one go"""
+    """Fetch beta & market info"""
     try:
-        ticker = ticker.upper().strip()  # Add strip()
+        ticker = ticker.upper().strip()
         
-        # Create session with proper error handling
+        # Create session
         try:
             session = requests.Session(impersonate="chrome120")
         except:
@@ -32,8 +31,8 @@ def fetch_stock_beta(ticker: str, period: str = "2y"):
             
         stock = yf.Ticker(ticker, session=session)
         
-        # Market detection with validation
-        market = 'US'  # Default
+        # Market detection
+        market = 'US'
         for k, v in MARKETS.items():
             if v['sfx'] and ticker.endswith(v['sfx']):
                 market = k
@@ -53,11 +52,9 @@ def fetch_stock_beta(ticker: str, period: str = "2y"):
         if len(s_hist) < 60 or len(m_hist) < 60:
             return None, "Insufficient data", None
         
-        # Returns & beta calc with better error handling
+        # Returns & beta calc
         s_ret = s_hist.pct_change().dropna()
         m_ret = m_hist.pct_change().dropna()
-        
-        # Align the series
         s_ret, m_ret = s_ret.align(m_ret, join='inner')
         
         # Remove outliers
@@ -68,18 +65,12 @@ def fetch_stock_beta(ticker: str, period: str = "2y"):
         if len(clean_s) < 60:
             return None, "Insufficient clean data", None
         
-        # Calculate beta with validation
+        # Calculate beta
         var_m = clean_m.var()
-        if var_m == 0 or np.isnan(var_m):
+        if var_m == 0:
             return None, "Market variance is zero", None
             
-        beta = clean_s.cov(clean_m) / var_m
-        
-        # Validate beta
-        if np.isnan(beta) or np.isinf(beta):
-            return None, "Invalid beta calculation", None
-            
-        beta = np.clip(beta, 0.1, 3.0)
+        beta = np.clip(clean_s.cov(clean_m) / var_m, 0.1, 3.0)
         
         return beta, None, {'market': market, 'market_premium': mkt['mp'], 'risk_free': mkt['rf']}
         
