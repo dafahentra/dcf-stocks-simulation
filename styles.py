@@ -8,6 +8,26 @@ def get_custom_css():
     """Minimal essential CSS"""
     return """
     <style>
+    
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        * { font-family: 'Inter', sans-serif !important; }
+        
+        /* Hide Streamlit UI elements */
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        header {visibility: hidden;}
+        .stDeployButton {display: none;}
+        .stToolbar {display: none;}
+        
+        /* Hide the viewer badge */
+        ._profileContainer {display: none;}
+        
+        /* Remove padding at top */
+        .block-container {
+            padding-top: 1rem;
+            padding-bottom: 0rem;
+        }
+    
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         * { font-family: 'Inter', sans-serif !important; }
         .stApp { background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%); }
@@ -91,3 +111,4 @@ def fmt_curr(amt: float, curr: str = 'USD') -> str:
 def fmt_pct(val: float, dec: int = 1) -> str:
     """Format percentage"""
     return f"{val*100:.{dec}f}%" if val is not None else "N/A"
+
