@@ -1,9 +1,7 @@
-"""Minimal Styling Module"""
-
 CURR = {'USD': '$', 'EUR': '€', 'GBP': '£', 'JPY': '¥', 'CNY': '¥', 'INR': '₹', 'KRW': '₩', 'IDR': 'Rp'}
 
 def get_custom_css():
-    """Minimal CSS - most handled by config.toml"""
+    """CSS"""
     return """
     <style>
         /* Hide Streamlit UI elements */
@@ -42,12 +40,12 @@ def get_custom_css():
     """
 
 def metric_card(label: str, value: str, delta: str = None) -> str:
-    """Metric card HTML"""
+    """Metric card"""
     d = f'<div style="color: {"#4ade80" if delta and "+" in delta[1] else "#f87171"}">{delta[1]}</div>' if delta else ''
     return f'<div class="metric-card"><div style="color:#888;font-size:0.875rem">{label}</div><div style="font-size:1.75rem;font-weight:600">{value}</div>{d}</div>'
 
 def summary_box(title: str, content: str) -> str:
-    """Summary box HTML"""
+    """Summary box"""
     return f'<div class="summary-box"><div style="font-size:1.25rem;font-weight:600;color:#c584f7;margin-bottom:1rem">{title}</div><div>{content}</div></div>'
 
 def fmt_curr(amt: float, curr: str = 'USD') -> str:
