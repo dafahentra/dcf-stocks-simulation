@@ -50,7 +50,7 @@ def main():
         
         company = st.text_input("Company Name", "Example Corp")
         ticker = st.text_input("Ticker Symbol", "EXPL")
-        currency = st.selectbox("Currency", ["USD", "EUR", "GBP", "JPY", "CNY", "INR"])
+        currency = st.selectbox("Currency", ["USD", "EUR", "GBP", "JPY", "CNY", "INR",  "KRW", "IDR"])
         
         price = st.number_input("Current Stock Price", 0.01, value=100.0, format="%.2f")
         shares = st.number_input("Shares Outstanding (millions)", 0.1, value=100.0, format="%.1f")
