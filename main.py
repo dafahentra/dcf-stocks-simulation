@@ -97,13 +97,13 @@ def main():
         rev_cols = st.columns(years)
         for i, col in enumerate(rev_cols):
             yr = curr_yr - i
-            revs.append(col.number_input(f"{yr}", 0.0, value=1000.0*(1.05**(years-i-1)), format="%.1f", key=f"r{yr}"))
+            revs.append(col.number_input(f"{yr}", -1000000000000.0, value=1000.0*(1.05**(years-i-1)), format="%.1f", key=f"r{yr}"))
         
         st.markdown("**Free Cash Flow (millions)**")
         fcf_cols = st.columns(years)
         for i, col in enumerate(fcf_cols):
             yr = curr_yr - i
-            fcfs.append(col.number_input(f"{yr}", -1000.0, value=100.0*(1.05**(years-i-1)), format="%.1f", key=f"f{yr}"))
+            fcfs.append(col.number_input(f"{yr}", -1000000000000.0, value=100.0*(1.05**(years-i-1)), format="%.1f", key=f"f{yr}"))
         
         revs.reverse()
         fcfs.reverse()
