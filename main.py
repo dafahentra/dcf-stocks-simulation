@@ -44,8 +44,8 @@ def section(title: str) -> str:
 
 def main():
     # Header
-    st.markdown('<h1 class="main-header">Probabilistic DCF Valuation</h1>', unsafe_allow_html=True)
-    st.markdown('<p class="sub-header">Monte Carlo simulation for intrinsic value estimation</p>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header">Stocks Valuation Simulation</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="sub-header">Using Monte Carlo for intrinsic value estimation</p>', unsafe_allow_html=True)
     
     # Sidebar
     with st.sidebar:
