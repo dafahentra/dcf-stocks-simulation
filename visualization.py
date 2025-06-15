@@ -72,12 +72,14 @@ def plot_sensitivity(res: dict, params: dict):
     
     for i, (param, pct) in enumerate(sorted(sens, key=lambda x: x[1], reverse=True)):
         impact = base * pct
-        fig.add_bar(y=[param], x=[-impact], orientation='h', marker_color='#f87171')
-        fig.add_bar(y=[param], x=[impact], orientation='h', marker_color='#4ade80')
+        fig.add_bar(y=[param], x=[-impact], orientation='h', marker_color='#f87171',
+                   name='Negative Impact' if i == 0 else None, showlegend=i==0)
+        fig.add_bar(y=[param], x=[impact], orientation='h', marker_color='#4ade80',
+                   name='Positive Impact' if i == 0 else None, showlegend=i==0)
     
     fig.add_vline(x=0, line_dash="solid", line_color="white", line_width=2)
     fig.update_layout(**CONFIG, height=400, title="Sensitivity Analysis",
-                      xaxis_title="Impact on Valuation", barmode='overlay')
+                     xaxis_title="Impact on Valuation", barmode='overlay')
     return fig
 
 def display_summary(res: dict, price: float, curr: str = 'USD'):
