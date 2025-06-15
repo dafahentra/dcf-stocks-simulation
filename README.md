@@ -7,7 +7,7 @@ A sophisticated web-based Discounted Cash Flow (DCF) valuation tool built with S
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 [![GitHub](https://img.shields.io/badge/GitHub-dafahentra-181717?logo=github)](https://github.com/dafahentra)
 
-## 🎯 Features
+## Features
 
 - **Real-time Beta Calculation**: Automatically fetch and calculate beta coefficients from market data
 - **Monte Carlo Simulation**: Run thousands of simulations to account for uncertainty in valuations
@@ -16,8 +16,6 @@ A sophisticated web-based Discounted Cash Flow (DCF) valuation tool built with S
 - **Flexible Growth Modeling**: Support for both fixed and range-based growth rate projections
 - **Export Functionality**: Download valuation results in JSON format
 
-## 📊 Screenshots
-
 The application provides:
 - Fair value distribution charts
 - Scenario analysis (Bear/Base/Bull cases)
@@ -25,7 +23,7 @@ The application provides:
 - Risk-return profiles
 - Percentile-based valuation ranges
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -52,7 +50,7 @@ streamlit run main.py
 
 4. Open your browser and navigate to `http://localhost:8501`
 
-## 💻 Usage
+## Usage
 
 ### Basic Workflow
 
@@ -84,7 +82,7 @@ streamlit run main.py
 - **Monte Carlo Settings**: Adjust number of simulations (1,000 to 50,000)
 - **Market Parameters**: Customize risk-free rate and market risk premium
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 dcf-valuation-tool/
@@ -98,7 +96,7 @@ dcf-valuation-tool/
 └── README.md          # This file
 ```
 
-## 🔧 Configuration
+## Configuration
 
 ### Market Parameters
 
@@ -121,7 +119,7 @@ Default market parameters by region:
 - **Growth rate bounds**: -30% to 50%
 - **Terminal growth cap**: 4%
 
-## 📈 Methodology
+## Methodology
 
 ### DCF Calculation
 
@@ -141,7 +139,7 @@ Default market parameters by region:
 
 4. **Monte Carlo Simulation**: Varies key parameters within reasonable bounds to generate a distribution of possible valuations
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -158,7 +156,7 @@ Default market parameters by region:
    - Clear browser cache
    - Try different port: `streamlit run main.py --server.port 8502`
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
@@ -168,21 +166,21 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🙏 Acknowledgements
+## Acknowledgements
 
 - Built with [Streamlit](https://streamlit.io/)
 - Financial data from [yfinance](https://github.com/ranaroussi/yfinance)
 - Visualizations powered by [Plotly](https://plotly.com/)
 
-## ⚠️ Disclaimer
+## Disclaimer
 
 This tool is for educational and research purposes only. It should not be used as the sole basis for investment decisions. Always conduct thorough due diligence and consult with financial professionals before making investment decisions.
 
-## 📧 Contact
+## Contact
 
 For questions, suggestions, or issues, please open an issue on GitHub or contact:
 - **Email**: dapahentra@gmail.com
