@@ -49,12 +49,12 @@ def summary_box(title: str, content: str) -> str:
     return f'<div class="summary-box"><div style="font-size:1.25rem;font-weight:600;color:#c584f7;margin-bottom:1rem">{title}</div><div>{content}</div></div>'
 
 def fmt_curr(amt: float, curr: str = 'USD') -> str:
-    """Format currency"""
+    """Format currency dengan thousand separator"""
     if not amt: return "N/A"
     s = CURR.get(curr, '$')
     for m, sfx in [(1e12,'T'), (1e9,'B'), (1e6,'M'), (1e3,'K')]:
-        if abs(amt) >= m: return f"{s}{amt/m:.1f}{sfx}"
-    return f"{s}{amt:.2f}"
+        if abs(amt) >= m: return f"{s}{amt/m:,.2f}{sfx}"
+    return f"{s}{amt:,.2f}"
 
 def fmt_pct(val: float, dec: int = 1) -> str:
     """Format percentage"""

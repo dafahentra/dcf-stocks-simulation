@@ -23,7 +23,7 @@ def plot_distribution(vals: np.ndarray, price: float, curr: str = 'USD'):
     for v, c, d, t in [(price, "#f87171", "dash", "Current"), 
                        (vals.mean(), "#4ade80", "dot", "Mean"),
                        (np.median(vals), "#60a5fa", "dot", "Median")]:
-        fig.add_vline(x=v, line_dash=d, line_color=c, annotation_text=f"{t}: {v:.2f}")
+        fig.add_vline(x=v, line_dash=d, line_color=c, annotation_text=f"{t}: {v:,.2f}")
     
     fig.update_layout(**CONFIG, height=500, title="Fair Value Distribution",
                       xaxis_title=f"Fair Value ({curr})", yaxis_title="Frequency")
