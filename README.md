@@ -1,21 +1,43 @@
-# DCF Valuation Simulator
+# DCF Valuation Tool
 
-A Monte Carlo simulation tool for enterprise valuation using discounted cash flow (DCF) analysis. This interactive web application helps financial analysts and investors understand valuation uncertainty through probabilistic modeling.
+A sophisticated web-based Discounted Cash Flow (DCF) valuation tool built with Streamlit that uses Monte Carlo simulation to estimate the intrinsic value of stocks.
 
-## Features
+![Python](https://img.shields.io/badge/python-v3.8+-blue.svg)
+![Streamlit](https://img.shields.io/badge/streamlit-1.28+-red.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+[![GitHub](https://img.shields.io/badge/GitHub-dafahentra-181717?logo=github)](https://github.com/dafahentra)
 
-- **Monte Carlo Simulation**: Run thousands of simulations to generate probability distributions of enterprise value
-- **Interactive Dashboard**: Real-time parameter adjustment with immediate visual feedback
-- **Sensitivity Analysis**: 2D heatmaps and 3D surface plots showing how WACC and growth rates impact valuation
-- **Statistical Insights**: Comprehensive statistics including mean, median, confidence intervals, and percentiles
-- **Data Export**: Download simulation results as CSV for further analysis
+## 🎯 Features
 
-## Installation
+- **Real-time Beta Calculation**: Automatically fetch and calculate beta coefficients from market data
+- **Monte Carlo Simulation**: Run thousands of simulations to account for uncertainty in valuations
+- **Multi-Market Support**: Works with stocks from US, UK, Germany, Japan, Hong Kong, India, and China markets
+- **Interactive Visualizations**: Beautiful charts showing value distributions, percentiles, and sensitivity analysis
+- **Flexible Growth Modeling**: Support for both fixed and range-based growth rate projections
+- **Export Functionality**: Download valuation results in JSON format
+
+## 📊 Screenshots
+
+The application provides:
+- Fair value distribution charts
+- Scenario analysis (Bear/Base/Bull cases)
+- Sensitivity analysis tornado charts
+- Risk-return profiles
+- Percentile-based valuation ranges
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Python 3.8 or higher
+- pip (Python package installer)
+
+### Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/dafahentra/dcf-valuation-simulator.git
-cd dcf-valuation-simulator
+git clone https://github.com/dafahentra/dcf-valuation-tool.git
+cd dcf-valuation-tool
 ```
 
 2. Install required packages:
@@ -23,104 +45,145 @@ cd dcf-valuation-simulator
 pip install -r requirements.txt
 ```
 
-## Requirements
-
-```
-streamlit==1.28.0
-numpy==1.24.3
-pandas==2.0.3
-matplotlib==3.7.2
-seaborn==0.12.2
-plotly==5.17.0
-```
-
-## Usage
-
-1. Run the Streamlit app:
+3. Run the application:
 ```bash
-streamlit run simulation.py
+streamlit run main.py
 ```
 
-2. Open your browser and navigate to `http://localhost:8501`
+4. Open your browser and navigate to `http://localhost:8501`
 
-3. Adjust parameters in the sidebar:
-   - **WACC**: Weighted Average Cost of Capital (8% - 16%)
-   - **Growth Rate**: Revenue growth rate (3% - 10%)
-   - **Margin**: Operating margin (10% - 20%)
-   - **Terminal Growth**: Long-term growth rate (2% - 6%)
+## 💻 Usage
 
-4. Click "Run Simulation" to generate valuation distribution
+### Basic Workflow
 
-5. Use "Run Sensitivity Analysis" to explore how WACC and growth rate combinations affect valuation
+1. **Enter Company Information**
+   - Company name and ticker symbol
+   - Current stock price
+   - Number of shares outstanding
 
-## How It Works
+2. **Set Financial Structure**
+   - Total debt and cash position
+   - Cost of debt and tax rate
 
-### DCF Model Components
+3. **Input Historical Data**
+   - Revenue for past 3-5 years
+   - Free cash flow for past 3-5 years
 
-The simulator implements a 5-year DCF model with terminal value:
+4. **Configure Growth Assumptions**
+   - Choose between fixed rates or ranges
+   - Set growth rates for projection period
+   - Define terminal growth rate
 
-1. **Revenue Projection**: `Revenue(t) = Revenue(0) × ∏(1 + growth(t))`
-2. **NOPAT Calculation**: `NOPAT(t) = Revenue(t) × Margin(t)`
-3. **Asset Calculation**: `Assets(t) = Revenue(t) / Asset_Turnover`
-4. **Free Cash Flow**: `FCFF(t) = NOPAT(t) - Net_Investment(t)`
-5. **Terminal Value**: `TV = FCFF(5) × (1 + g) / (WACC - g)`
-6. **Enterprise Value**: `EV = Σ[FCFF(t) / (1 + WACC)^t]`
+5. **Run Valuation**
+   - Click "Run DCF Valuation"
+   - View results across multiple tabs
 
-### Monte Carlo Simulation
+### Advanced Features
 
-Each simulation run:
-- Randomly generates growth rates from Normal(μ_growth, σ_growth)
-- Randomly generates margins from Normal(μ_margin, σ_margin)
-- Randomly generates terminal growth from Normal(μ_terminal, σ_terminal)
-- Calculates enterprise value using the DCF formula
+- **Beta Fetching**: Click "Fetch Beta" to automatically retrieve beta from market data
+- **Monte Carlo Settings**: Adjust number of simulations (1,000 to 50,000)
+- **Market Parameters**: Customize risk-free rate and market risk premium
 
-## Parameters
-
-### Primary Parameters
-- **Initial Revenue**: Starting revenue (default: 100)
-- **Initial Assets**: Starting assets (default: 80)
-- **Assets Turnover**: Revenue/Assets ratio (default: 1.3)
-- **WACC**: Discount rate for cash flows
-
-### Volatility Parameters
-- **Growth Std Dev**: Standard deviation of growth rate
-- **Margin Std Dev**: Standard deviation of operating margin
-- **Terminal Growth Std Dev**: Standard deviation of terminal growth
-
-## Output
-
-### Simulation Results
-- **Distribution Plot**: Histogram showing probability density of valuations
-- **Summary Statistics**: Count, mean, std dev, min, max, and percentiles
-- **Box Plot**: Visual representation of quartiles and outliers
-- **Confidence Intervals**: 95% CI for valuation estimates
-
-### Sensitivity Analysis
-- **2D Heatmap**: Valuation matrix for WACC vs Growth Rate combinations
-- **3D Surface Plot**: Three-dimensional visualization of valuation surface
-
-## Example Output
+## 📁 Project Structure
 
 ```
-Expected Value: 312.45
-95% Confidence Interval: [245.32, 389.78]
-Median: 308.91
-Standard Deviation: 42.18
+dcf-valuation-tool/
+│
+├── main.py              # Main Streamlit application
+├── dcf_engine.py        # DCF calculation engine
+├── beta_fetcher.py      # Beta coefficient fetcher
+├── visualization.py     # Plotting functions
+├── styles.py           # UI styling and formatting
+├── requirements.txt    # Python dependencies
+└── README.md          # This file
 ```
 
-## License
+## 🔧 Configuration
 
-MIT License
+### Market Parameters
 
-## Contributing
+Default market parameters by region:
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+| Market | Index | Market Premium | Risk-Free Rate |
+|--------|-------|----------------|----------------|
+| US     | S&P 500 | 6.5% | 4.5% |
+| UK     | FTSE 100 | 6.0% | 4.0% |
+| Germany | DAX | 5.5% | 2.5% |
+| Japan  | Nikkei 225 | 5.0% | 0.1% |
+| Hong Kong | HSI | 6.5% | 4.0% |
+| India  | BSE SENSEX | 8.0% | 7.0% |
+| China  | SSE Composite | 7.0% | 2.5% |
 
-## Author
+### Simulation Parameters
 
-Dafa Hentra Anjana
+- **Default simulations**: 10,000
+- **Projection years**: 3-10 years (default: 5)
+- **Growth rate bounds**: -30% to 50%
+- **Terminal growth cap**: 4%
 
-## Acknowledgments
+## 📈 Methodology
 
-- Built with Streamlit for rapid web development
-- Inspired by traditional DCF valuation methods in corporate finance
+### DCF Calculation
+
+1. **WACC Calculation**:
+   ```
+   WACC = We × Ce + Wd × Cd × (1 - Tax Rate)
+   ```
+   Where:
+   - We = Weight of equity
+   - Ce = Cost of equity (Risk-free rate + Beta × Market premium)
+   - Wd = Weight of debt
+   - Cd = Cost of debt
+
+2. **Free Cash Flow Projection**: Projects FCF based on historical growth patterns
+
+3. **Terminal Value**: Calculated using the Gordon Growth Model
+
+4. **Monte Carlo Simulation**: Varies key parameters within reasonable bounds to generate a distribution of possible valuations
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+1. **Beta fetch fails**: 
+   - Ensure ticker symbol is correct
+   - Check internet connection
+   - Manually input beta if automatic fetch fails
+
+2. **Import errors**:
+   - Run `pip install -r requirements.txt` again
+   - Ensure Python version is 3.8+
+
+3. **Streamlit not loading**:
+   - Clear browser cache
+   - Try different port: `streamlit run main.py --server.port 8502`
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- Built with [Streamlit](https://streamlit.io/)
+- Financial data from [yfinance](https://github.com/ranaroussi/yfinance)
+- Visualizations powered by [Plotly](https://plotly.com/)
+
+## ⚠️ Disclaimer
+
+This tool is for educational and research purposes only. It should not be used as the sole basis for investment decisions. Always conduct thorough due diligence and consult with financial professionals before making investment decisions.
+
+## 📧 Contact
+
+For questions, suggestions, or issues, please open an issue on GitHub or contact:
+- **Email**: dapahentra@gmail.com
+- **GitHub**: [dafahentra](https://github.com/dafahentra)

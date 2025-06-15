@@ -1,6 +1,8 @@
-streamlit
+streamlit>
 numpy
 pandas
-plotly
 scipy
 yfinance
+plotly
+curl-cffi
+requests
